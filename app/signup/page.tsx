@@ -29,26 +29,28 @@ export default function SignUpPage() {
   const router = useRouter();
 
   async function handleSignUp() {
-    const userCredentials = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    if (password === confirmPassword) {
+      const userCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    await updateProfile(userCredentials.user, {
-      displayName: name,
-    });
+      await updateProfile(userCredentials.user, {
+        displayName: name,
+      });
 
-    dispatch(
-      signInUser({
-        name: userCredentials.user.displayName!,
-        username: userCredentials.user.email!.split("@")[0],
-        email: userCredentials.user.email!,
-        uid: userCredentials.user.uid,
-        events: [],
-      })
-    );
-    router.push("/");
+      dispatch(
+        signInUser({
+          name: userCredentials.user.displayName!,
+          username: userCredentials.user.email!.split("@")[0],
+          email: userCredentials.user.email!,
+          uid: userCredentials.user.uid,
+          events: [],
+        })
+      );
+      router.push("/");
+    }
   }
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function SignUpPage() {
           <div>
             <h2 className="text-3xl font-bold text-gray-900 m-4">Sign Up</h2>
           </div>
-          <div>
+          <div className="flex flex-col justify-center">
             <div className="space-y-4">
               <div className="grid gap-1 m-4">
                 <input
@@ -150,8 +152,16 @@ export default function SignUpPage() {
                 />
               </div>
 
+              <span
+                className={`text-center text-red-500 ${
+                  password === confirmPassword ? "hidden" : "block"
+                }`}
+              >
+                Passwords do not match
+              </span>
+
               <button
-                className="w-full lg:w-md bg-purple-600 hover:bg-purple-700 text-white hover:cursor-pointer rounded-full h-10 block mx-auto"
+                className="w-full lg:w-md bg-purple-600 transition hover:bg-purple-700 text-white hover:cursor-pointer rounded-full h-10 block mx-auto"
                 onClick={() => handleSignUp()}
               >
                 Sign Up
@@ -162,7 +172,7 @@ export default function SignUpPage() {
               Already have an account?{" "}
               <a
                 href="/login"
-                className="text-purple-600 hover:underline hover:cursor-pointer"
+                className="text-purple-600 hover:underline hover:cursor-pointer transition"
               >
                 Log in
               </a>

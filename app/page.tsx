@@ -22,7 +22,10 @@ import DeleteModal from "@/components/modals/DeleteModal";
 import Header from "@/components/Header";
 import { redirect, useRouter } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
-import { openLoadingScreen } from "@/redux/slices/loadingSlice";
+import {
+  closeLoadingScreen,
+  openLoadingScreen,
+} from "@/redux/slices/loadingSlice";
 
 interface Event {
   title: string;
@@ -42,6 +45,7 @@ export default function Home() {
       // if there is NO username, kick them to login
       router.push("/login");
     }
+    dispatch(closeLoadingScreen());
   }, [user.username, router]);
 
   const [events, setEvents] = useState([
