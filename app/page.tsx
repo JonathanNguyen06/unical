@@ -21,6 +21,8 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import DeleteModal from "@/components/modals/DeleteModal";
 import Header from "@/components/Header";
 import { redirect, useRouter } from "next/navigation";
+import LoadingScreen from "@/components/LoadingScreen";
+import { openLoadingScreen } from "@/redux/slices/loadingSlice";
 
 interface Event {
   title: string;
@@ -32,8 +34,10 @@ interface Event {
 export default function Home() {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(openLoadingScreen());
     if (!user.username) {
       // if there is NO username, kick them to login
       router.push("/login");
@@ -55,8 +59,6 @@ export default function Home() {
     allDay: false,
     id: 0,
   });
-
-  const dispatch = useDispatch();
 
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
     setNewEvent({
@@ -86,6 +88,7 @@ export default function Home() {
 
   return (
     <>
+      <LoadingScreen />
       <Header />
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="grid grid-cols-10">
