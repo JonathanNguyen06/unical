@@ -57,6 +57,12 @@ export default function SignUpPage() {
     setShowPassword(!showPassword);
   };
 
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      handleSignUp();
+    }
+  }
+
   return (
     <>
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
@@ -77,6 +83,7 @@ export default function SignUpPage() {
                   className="w-full h-10 border-gray-200 border rounded-md"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  onKeyDown={onKeyDown}
                 />
               </div>
               <div className="grid gap-1 m-4">
@@ -87,6 +94,7 @@ export default function SignUpPage() {
                   className="w-full h-10 border-gray-200 border rounded-md"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  onKeyDown={onKeyDown}
                 />
               </div>
               <div className="grid gap-1 m-4">
@@ -97,6 +105,7 @@ export default function SignUpPage() {
                   className="w-full h-10 border-gray-200 border rounded-md"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={onKeyDown}
                 />
               </div>
               <div
@@ -110,6 +119,7 @@ export default function SignUpPage() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={onKeyDown}
                 ></input>
                 <div
                   className="w-7 h-7 text-gray-400 cursor-pointer
@@ -127,6 +137,7 @@ export default function SignUpPage() {
                   className="w-full h-10 border-gray-200 border rounded-md"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  onKeyDown={onKeyDown}
                 />
               </div>
 

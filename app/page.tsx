@@ -122,7 +122,7 @@ export default function Home() {
               headerToolbar={{
                 left: "prev,next today",
                 center: "title",
-                right: "resourceTimelineWeek, dayGridMonth, timeGridWeek",
+                right: "resourceTimelineWeek, dayGridMonth timeGridWeek",
               }}
               events={allEvents}
               nowIndicator={true}
@@ -133,6 +133,11 @@ export default function Home() {
               dateClicked={handleDateClick}
               drop={(data) => addEvent(data)}
               eventClick={(data) => handleDeleteModal(data)}
+              buttonText={{
+                today: "Today",
+                month: "Month",
+                week: "Week",
+              }}
             />
           </div>
           <div

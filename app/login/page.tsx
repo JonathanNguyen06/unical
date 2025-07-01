@@ -8,10 +8,12 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { signInUser } from "@/redux/slices/userSlice";
+import { CircularProgress } from "@mui/material";
 export default function page() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
   const router = useRouter();
 
   const handleShowPassword = () => {
@@ -21,26 +23,41 @@ export default function page() {
   const dispatch: AppDispatch = useDispatch();
 
   async function handleLogIn() {
-    const userCredentials = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    await updateProfile(userCredentials.user, {
-      displayName: userCredentials.user.displayName,
-    });
+    try {
+      setLoggingIn(true);
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await updateProfile(userCredentials.user, {
+        displayName: userCredentials.user.displayName,
+      });
 
-    dispatch(
-      signInUser({
-        name: userCredentials.user.displayName!,
-        username: userCredentials.user.email!.split("@")[0],
-        email: userCredentials.user.email!,
-        uid: userCredentials.user.uid,
-        events: [],
-      })
-    );
+      dispatch(
+        signInUser({
+          name: userCredentials.user.displayName!,
+          username: userCredentials.user.email!.split("@")[0],
+          email: userCredentials.user.email!,
+          uid: userCredentials.user.uid,
+          events: [],
+        })
+      );
 
-    router.push("/");
+      router.push("/");
+      setLoggingIn(false);
+    } catch {
+      setLoggingIn(false);
+      if (!email || !password) {
+        console.log("Empty inputs");
+      }
+    }
+  }
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      handleLogIn();
+    }
   }
 
   return (
@@ -63,6 +80,7 @@ export default function page() {
                   className="w-full h-10 border-gray-200 border rounded-md"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={onKeyDown}
                 />
               </div>
               <div className="grid gap-1 m-4">
@@ -73,13 +91,22 @@ export default function page() {
                   className="w-full h-10 border-gray-200 border rounded-md"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={onKeyDown}
                 />
               </div>
               <button
                 className="w-full lg:w-md bg-purple-600 hover:bg-purple-700 transition text-white hover:cursor-pointer rounded-full h-10 block mx-auto"
                 onClick={() => handleLogIn()}
               >
-                Log In
+                {loggingIn ? (
+                  <CircularProgress
+                    size={25}
+                    className="block mt-1"
+                    color="inherit"
+                  />
+                ) : (
+                  "Log In"
+                )}
               </button>
             </div>
 
