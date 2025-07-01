@@ -53,28 +53,6 @@ export default function SignUpPage() {
     }
   }
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) {
-        return;
-      }
-
-      //Handle redux actions
-      dispatch(
-        signInUser({
-          name: currentUser.displayName!,
-          username: currentUser.email!.split("@")[0],
-          email: currentUser.email!,
-          uid: currentUser.uid,
-          events: [],
-        })
-      );
-      setAuthChecked(true);
-    });
-
-    return unsubscribe;
-  }, []);
-
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -82,7 +60,7 @@ export default function SignUpPage() {
   return (
     <>
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <Header />
+        <Header loggedIn={false} />
 
         {/* Sign Up Card */}
         <div className="w-full lg:w-xl rounded-2xl shadow-lg">

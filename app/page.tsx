@@ -26,6 +26,9 @@ import {
   closeLoadingScreen,
   openLoadingScreen,
 } from "@/redux/slices/loadingSlice";
+import { onAuthStateChanged } from "firebase/auth";
+import { signInUser } from "@/redux/slices/userSlice";
+import { auth } from "@/firebase";
 
 interface Event {
   title: string;
@@ -38,15 +41,32 @@ export default function Home() {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     dispatch(openLoadingScreen());
-    if (!user.username) {
-      // if there is NO username, kick them to login
-      router.push("/login");
-    }
-    dispatch(closeLoadingScreen());
-  }, [user.username, router]);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        router.push("/login");
+        return;
+      }
+
+      //Handle redux actions
+      dispatch(
+        signInUser({
+          name: currentUser.displayName!,
+          username: currentUser.email!.split("@")[0],
+          email: currentUser.email!,
+          uid: currentUser.uid,
+          events: [],
+        })
+      );
+      setAuthChecked(true);
+      dispatch(closeLoadingScreen());
+    });
+
+    return unsubscribe;
+  }, []);
 
   const [events, setEvents] = useState([
     { title: "event 1", id: "1" },
@@ -93,7 +113,7 @@ export default function Home() {
   return (
     <>
       <LoadingScreen />
-      <Header />
+      <Header loggedIn={true} />
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="grid grid-cols-10">
           <div className="col-span-8">

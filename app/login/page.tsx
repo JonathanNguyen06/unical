@@ -46,7 +46,7 @@ export default function page() {
   return (
     <>
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <Header />
+        <Header loggedIn={false} />
 
         {/* Log In Card */}
         <div className="w-full lg:w-xl h-fit rounded-2xl shadow-lg">
